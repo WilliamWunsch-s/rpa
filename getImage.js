@@ -33,21 +33,26 @@ async function getImages(username, password, number){
     await page.click('.chat-room__content');
     await page.waitForTimeout(3000);
 
-    const chatMessages = await page.$$('.chat-message.another'); 
+    const chatMessages = await page.$$('.chat-message.another');
+    // let documents = [];
+    let images = [];
 
     for (let chatMessage of chatMessages) {
-    const imageMessage = await chatMessage.$('.image-message'); 
-    if (imageMessage) {
-        const imgElement = await imageMessage.$('img'); 
-        if (imgElement) {
-        const src = await imgElement.getProperty('src');
-        const srcValue = await src.jsonValue();
-        return srcValue
+        const imageMessage = await chatMessage.$('.image-message');
+        // const documentMessage = await chatMessage.$('.document-message');    
+        if (imageMessage) {
+            const imgElement = await imageMessage.$('img'); 
+            const dateImgage = await imageMessage.$('span.date')
+            if (imgElement) {
+                const src = await imgElement.getProperty('src');
+                const srcValue = await src.jsonValue();
+                images.push(srcValue);
+            }
         }
     }
-    }
-    
+
     await browser.close();
+    return images
     
 }
 
